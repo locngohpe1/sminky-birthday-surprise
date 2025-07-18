@@ -603,14 +603,11 @@
                 button.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
                 document.getElementById('gameHint').textContent = '🎉 Tuyệt! Giờ bạn có thể chơi game Arkanoid để lấy trái tim! 💖';
                 
-                // Remove any existing game container to prevent duplicates
-                var existingGameContainer = document.querySelector('.game-container');
-                if (existingGameContainer) {
-                    existingGameContainer.remove();
-                }
-                
                 setTimeout(function() {
-                    startArkanoidGame();
+                    // Only start game if not already created
+                    if (!gameContainerCreated) {
+                        startArkanoidGame();
+                    }
                 }, 2000);
             }
         }
@@ -682,11 +679,27 @@
         }
 
         // 🎮 ARKANOID GAME
+        var gameContainerCreated = false; // Prevent duplicate containers
+
         function startArkanoidGame() {
             debug('Starting Arkanoid game');
             
+            // Prevent multiple game containers
+            if (gameContainerCreated) {
+                debug('Game container already exists, skipping creation');
+                return;
+            }
+            
+            gameContainerCreated = true;
+            
             // Hide everything else
             document.querySelector('.container').style.display = 'none';
+            
+            // Remove any existing game containers first
+            var existingContainers = document.querySelectorAll('.game-container');
+            existingContainers.forEach(function(container) {
+                container.remove();
+            });
             
             // Create game container
             var gameContainer = document.createElement('div');
@@ -782,7 +795,7 @@
         var score = 0;
         var hearts = 3;
         var gameRunning = false;
-        var pentagon = { x: 300, y: 200, size: 60 };
+        var pentagon = { x: 300, y: 80, size: 60 }; // Moved pentagon much higher (was y: 200)
 
         function initArkanoidGame() {
             canvas = document.getElementById('gameCanvas');
@@ -827,12 +840,12 @@
         function createBricks() {
             bricks = [];
             var centerX = canvas.width / 2;
-            var centerY = canvas.height / 2;
+            var centerY = 80; // Much higher position (was 200)
             
-            // Create concentric circles of bricks around pentagon
+            // Create concentric circles of bricks around pentagon with much larger radius
             for (var ring = 0; ring < 3; ring++) {
-                var radius = 80 + ring * 30;
-                var bricksInRing = 8 + ring * 4;
+                var radius = 40 + ring * 20; // Smaller protective radius (was 80 + ring * 30)
+                var bricksInRing = 6 + ring * 2; // Fewer bricks per ring (was 8 + ring * 4)
                 
                 for (var i = 0; i < bricksInRing; i++) {
                     var angle = (i / bricksInRing) * 2 * Math.PI;
@@ -1118,6 +1131,9 @@
             // Remove any temporary messages
             var tempMsg = document.getElementById('tempMessage');
             if (tempMsg) tempMsg.remove();
+            
+            // Reset game container flag to allow recreation if needed
+            gameContainerCreated = false;
             
             gameRunning = true;
             gameLoop();

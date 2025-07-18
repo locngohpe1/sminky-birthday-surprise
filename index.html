@@ -203,7 +203,8 @@
             background: linear-gradient(45deg, #ff6b6b, #ff9ff3);
             border: none;
             border-radius: 25px;
-            color: white;
+            color: black;
+            font-weight: bold;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -497,9 +498,9 @@
                 var finalMessage = document.createElement('div');
                 finalMessage.className = 'love-message';
                 finalMessage.style.animation = 'pulse 2s infinite';
-                finalMessage.innerHTML = '<h2>💕 Happy Birthday, Beautiful! 💕</h2>' +
-                    '<p>Thank you for being the most amazing girlfriend in the world!</p>' +
-                    '<p>I love you more than words can express! 💖</p>' +
+                finalMessage.innerHTML = '<h2 style="color: black; font-weight: bold;">💕 Happy Birthday, Beautiful! 💕</h2>' +
+                    '<p style="color: black; font-weight: bold;">Thank you for being the most amazing girlfriend in the world!</p>' +
+                    '<p style="color: black; font-weight: bold;">I love you more than words can express! 💖</p>' +
                     '<div style="margin-top: 15px;">' +
                     '<span class="emoji">🎂</span>' +
                     '<span class="emoji">💝</span>' +
@@ -521,13 +522,13 @@
             gameInvitation.className = 'game-invitation';
             gameInvitation.innerHTML = `
                 <div style="text-align: center; margin-top: 30px; padding: 25px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 2px solid rgba(255, 182, 193, 0.5);">
-                    <h3 style="color: #ff6b6b; margin-bottom: 20px;">🎮 Surprise Game cho Sminky! 🎮</h3>
-                    <p style="margin-bottom: 25px;">Sẵn sàng chơi một game nhỏ để lấy trái tim cuối cùng? 💖</p>
+                    <h3 style="color: black; font-weight: bold;">🎮 Surprise Game cho Sminky! 🎮</h3>
+                    <p style="color: black; font-weight: bold; margin-bottom: 25px;">Sẵn sàng chơi một game nhỏ để lấy trái tim cuối cùng? 💖</p>
                     <div id="runawayButtons" style="display: flex; gap: 20px; justify-content: center;">
-                        <button id="sleepyBtn" class="runaway-btn" onmouseover="runAway(this)" onclick="catchButton(this, 'sleepy')">
+                        <button id="sleepyBtn" class="runaway-btn" onmouseover="runAway(this)" onclick="catchButton(this, 'sleepy')" style="color: black; font-weight: bold;">
                             😴 Đang buồn ngủ
                         </button>
-                        <button id="lazyBtn" class="runaway-btn" onmouseover="runAway(this)" onclick="catchButton(this, 'lazy')">  
+                        <button id="lazyBtn" class="runaway-btn" onmouseover="runAway(this)" onclick="catchButton(this, 'lazy')" style="color: black; font-weight: bold;">  
                             😑 Đang bùn ẻ
                         </button>
                     </div>
@@ -593,6 +594,8 @@
             if (buttonClickCounts[type] === 1) {
                 button.textContent = type === 'sleepy' ? '😴 Bắt được rồi!' : '😑 Bắt được rồi!';
                 button.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
+                button.style.color = 'black';
+                button.style.fontWeight = 'bold';
                 document.getElementById('gameHint').textContent = '🎉 Tuyệt! Giờ bạn có thể chơi game Arkanoid để lấy trái tim! 💖';
                 
                 setTimeout(function() {
@@ -841,14 +844,14 @@
                 
                 for (var i = 0; i < bricksInRing; i++) {
                     var angle = (i / bricksInRing) * 2 * Math.PI;
-                    var x = centerX + Math.cos(angle) * radius - 10; // Adjusted for smaller size
-                    var y = centerY + Math.sin(angle) * radius - 5; // Adjusted for smaller size
+                    var x = centerX + Math.cos(angle) * radius - 15; // Adjusted for larger size
+                    var y = centerY + Math.sin(angle) * radius - 7.5; // Adjusted for larger size
                     
                     bricks.push({
                         x: x,
                         y: y,
-                        width: 20, // Reduced from 40 to 20 (half size)
-                        height: 10, // Reduced from 20 to 10 (half size)
+                        width: 30, // Increased from 20 to 30 (1.5x)
+                        height: 15, // Increased from 10 to 15 (1.5x)
                         color: ring === 0 ? '#ff6b6b' : ring === 1 ? '#feca57' : '#48dbfb',
                         destroyed: false
                     });

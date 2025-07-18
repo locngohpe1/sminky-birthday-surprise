@@ -15,7 +15,7 @@
 
         body {
             background: #ffc2d1;
-            font-family: 'Courier New', monospace;
+            font-family: 'Times New Roman', serif;
             color: white;
             overflow-x: auto;
             min-height: 100vh;
@@ -33,10 +33,12 @@
             border-radius: 20px;
             backdrop-filter: blur(10px);
             border: 2px solid rgba(255, 255, 255, 0.2);
+            font-family: 'Times New Roman', serif;
         }
 
         .start-btn {
             font-size: 24px;
+            font-family: 'Times New Roman', serif;
             padding: 15px 30px;
             background: linear-gradient(45deg, #ff6b6b, #ff9ff3);
             border: none;
@@ -118,6 +120,7 @@
 
         .love-message {
             font-size: 18px;
+            font-family: 'Times New Roman', serif;
             margin: 20px 0;
             padding: 20px;
             background: rgba(255, 255, 255, 0.1);
@@ -145,6 +148,7 @@
             padding: 10px;
             border-radius: 5px;
             font-size: 12px;
+            font-family: 'Times New Roman', serif;
             z-index: 1000;
         }
 
@@ -187,6 +191,7 @@
             padding: 10px 15px;
             border-radius: 20px;
             font-size: 14px;
+            font-family: 'Times New Roman', serif;
             backdrop-filter: blur(10px);
             z-index: 1000;
             opacity: 0;
@@ -206,6 +211,7 @@
             color: black;
             font-weight: bold;
             font-size: 16px;
+            font-family: 'Times New Roman', serif;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -234,18 +240,21 @@
             background: rgba(0, 0, 0, 0.8);
             border-radius: 20px;
             border: 2px solid #ff6b6b;
+            font-family: 'Times New Roman', serif;
         }
 
         .game-ui {
             color: white;
             margin: 15px 0;
             font-size: 18px;
+            font-family: 'Times New Roman', serif;
         }
 
         .game-controls {
             margin: 15px 0;
             font-size: 14px;
             color: #feca57;
+            font-family: 'Times New Roman', serif;
         }
     </style>
 </head>
@@ -576,8 +585,9 @@
                 : `😅 Hết chạy rồi! Giờ bắt em đi anh! 💕`;
             
             var hint = document.getElementById('gameHint');
-            hint.textContent = escapeText;
-            hint.style.color = buttonRunawayCounts[buttonType] >= 3 ? '#4ecdc4' : '#feca57';
+            hint.innerHTML = escapeText;
+            hint.style.color = 'black';
+            hint.style.fontWeight = 'bold';
             
             setTimeout(function() {
                 button.style.transform = 'scale(1)';
@@ -950,7 +960,7 @@
             
             // Show launch instruction if ball is attached
             if (ball.dx === 0 && ball.dy === 0) {
-                ctx.font = '16px Arial';
+                ctx.font = '16px "Times New Roman"';
                 ctx.fillStyle = '#feca57';
                 ctx.textAlign = 'center';
                 ctx.fillText('Click to launch! 🚀', canvas.width / 2, canvas.height - 30);
@@ -1010,7 +1020,7 @@
             var centerX = pentagon.x;
             var centerY = pentagon.y;
             
-            ctx.font = '30px Arial';
+            ctx.font = '30px "Times New Roman"';
             ctx.fillStyle = '#ff1744';
             ctx.textAlign = 'center';
             ctx.fillText('💖', centerX, centerY + 10);
@@ -1065,6 +1075,7 @@
                 padding: 15px 25px;
                 border-radius: 20px;
                 font-size: 18px;
+                font-family: 'Times New Roman', serif;
                 z-index: 1000;
                 animation: pulse 1s infinite;
             `;
@@ -1086,12 +1097,12 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            ctx.font = '40px Arial';
+            ctx.font = '40px "Times New Roman"';
             ctx.fillStyle = '#ff6b6b';
             ctx.textAlign = 'center';
             ctx.fillText('🎉 YOU WON! 🎉', canvas.width / 2, canvas.height / 2 - 40);
             
-            ctx.font = '24px Arial';
+            ctx.font = '24px "Times New Roman"';
             ctx.fillStyle = 'white';
             ctx.fillText('You got the heart! 💖', canvas.width / 2, canvas.height / 2);
             ctx.fillText('Sminky is so lucky to have you! 💕', canvas.width / 2, canvas.height / 2 + 40);
@@ -1106,12 +1117,12 @@
             ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            ctx.font = '40px Arial';
+            ctx.font = '40px "Times New Roman"';
             ctx.fillStyle = '#ff6b6b';
             ctx.textAlign = 'center';
             ctx.fillText('💔 GAME OVER 💔', canvas.width / 2, canvas.height / 2 - 20);
             
-            ctx.font = '20px Arial';
+            ctx.font = '20px "Times New Roman"';
             ctx.fillStyle = 'white';
             ctx.fillText('Click restart to try again!', canvas.width / 2, canvas.height / 2 + 20);
         }
@@ -1145,11 +1156,11 @@
                     background: #ffc2d1;
                     text-align: center;
                     color: white;
-                    font-family: 'Courier New', monospace;
+                    font-family: 'Times New Roman', serif;
                 ">
-                    <h1 style="font-size: 3em; margin-bottom: 30px;">🎉 CONGRATULATIONS! 🎉</h1>
-                    <h2 style="font-size: 2em; margin-bottom: 20px;">💖 You've collected all the hearts! 💖</h2>
-                    <p style="font-size: 1.5em; margin-bottom: 40px;">
+                    <h1 style="font-size: 3em; margin-bottom: 30px; color: black;">🎉 CONGRATULATIONS! 🎉</h1>
+                    <h2 style="font-size: 2em; margin-bottom: 20px; color: black;">💖 You've collected all the hearts! 💖</h2>
+                    <p style="font-size: 1.5em; margin-bottom: 40px; color: black;">
                         Just like in this game, you've broken through all barriers<br>
                         to reach my heart, dear Sminky! 💕
                     </p>
@@ -1160,8 +1171,8 @@
                         border: 2px solid rgba(255, 255, 255, 0.3);
                         max-width: 600px;
                     ">
-                        <h3 style="color: #ff6b6b; margin-bottom: 20px;">🌟 Final Birthday Message 🌟</h3>
-                        <p style="font-size: 1.2em; line-height: 1.6;">
+                        <h3 style="color: black; margin-bottom: 20px;">🌟 Final Birthday Message 🌟</h3>
+                        <p style="font-size: 1.2em; line-height: 1.6; color: black;">
                             Happy Birthday, my beautiful Sminky! 🎂<br><br>
                             This entire surprise - the art, the music, the game - 
                             was coded with love just for you! 💻💕<br><br>
@@ -1180,6 +1191,7 @@
                             border-radius: 50px;
                             color: white;
                             font-size: 18px;
+                            font-family: 'Times New Roman', serif;
                             cursor: pointer;
                             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
                             transition: all 0.3s ease;
@@ -1194,6 +1206,7 @@
                             border-radius: 50px;
                             color: white;
                             font-size: 18px;
+                            font-family: 'Times New Roman', serif;
                             cursor: pointer;
                             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
                             transition: all 0.3s ease;

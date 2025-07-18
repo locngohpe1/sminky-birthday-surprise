@@ -204,6 +204,56 @@
         .music-info.show {
             opacity: 1;
         }
+
+        /* 🎮 GAME STYLES */
+        .runaway-btn {
+            padding: 12px 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ff9ff3);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            position: relative;
+            min-width: 140px;
+        }
+
+        .runaway-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .game-canvas {
+            border: 3px solid #ff6b6b;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            margin: 20px auto;
+            display: block;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .game-container {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 20px;
+            border: 2px solid #ff6b6b;
+        }
+
+        .game-ui {
+            color: white;
+            margin: 15px 0;
+            font-size: 18px;
+        }
+
+        .game-controls {
+            margin: 15px 0;
+            font-size: 14px;
+            color: #feca57;
+        }
     </style>
 </head>
 <body>
@@ -424,6 +474,7 @@
 
         var currentIndex = 0;
         var typingSpeed = 15;
+        var finalMessageShown = false; // Prevent duplicate final message
 
         function typeWriter() {
             debug('Typing: ' + currentIndex + '/' + artContent.length);
@@ -435,12 +486,21 @@
                 setTimeout(typeWriter, typingSpeed);
             } else {
                 debug('Typing complete');
-                showFinalMessage();
+                if (!finalMessageShown) {
+                    showFinalMessage();
+                }
             }
         }
 
         function showFinalMessage() {
+            if (finalMessageShown) {
+                debug('Final message already shown, skipping');
+                return;
+            }
+            
+            finalMessageShown = true;
             debug('Showing final message');
+            
             setTimeout(function() {
                 var finalMessage = document.createElement('div');
                 finalMessage.className = 'love-message';
@@ -455,11 +515,82 @@
                     '<span class="emoji">💕</span>' +
                     '</div>';
                 document.querySelector('.container').appendChild(finalMessage);
+                
+                // Add game invitation after final message
+                setTimeout(function() {
+                    showGameInvitation();
+                }, 3000);
             }, 2000);
+        }
+
+        // 🎮 GAME INVITATION & RUNAWAY BUTTONS
+        function showGameInvitation() {
+            var gameInvitation = document.createElement('div');
+            gameInvitation.className = 'game-invitation';
+            gameInvitation.innerHTML = `
+                <div style="text-align: center; margin-top: 30px; padding: 25px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 2px solid rgba(255, 182, 193, 0.5);">
+                    <h3 style="color: #ff6b6b; margin-bottom: 20px;">🎮 Surprise Game cho Sminky! 🎮</h3>
+                    <p style="margin-bottom: 25px;">Sẵn sàng chơi một game nhỏ để lấy trái tim cuối cùng? 💖</p>
+                    <div id="runawayButtons" style="display: flex; gap: 20px; justify-content: center;">
+                        <button id="sleepyBtn" class="runaway-btn" onmouseover="runAway(this)" onclick="catchButton(this, 'sleepy')">
+                            😴 Đang buồn ngủ
+                        </button>
+                        <button id="lazyBtn" class="runaway-btn" onmouseover="runAway(this)" onclick="catchButton(this, 'lazy')">  
+                            😑 Đang bùn ẻ
+                        </button>
+                    </div>
+                    <p id="gameHint" style="margin-top: 15px; font-size: 14px; opacity: 0.8; color: #feca57;">
+                        💡 Hint: Di chuột vào button và chase theo nó! Click 2 lần để bắt được! 🏃‍♀️
+                    </p>
+                </div>
+            `;
+            document.querySelector('.container').appendChild(gameInvitation);
+        }
+
+        var buttonClickCounts = { sleepy: 0, lazy: 0 };
+        var runawayPositions = {};
+
+        function runAway(button) {
+            if (buttonClickCounts[button.id.replace('Btn', '')] >= 1) return;
+            
+            var container = document.querySelector('.container');
+            var containerRect = container.getBoundingClientRect();
+            
+            // Random position within container
+            var newX = Math.random() * (containerRect.width - button.offsetWidth);
+            var newY = Math.random() * 200 + 50; // Keep within reasonable bounds
+            
+            button.style.position = 'absolute';
+            button.style.left = newX + 'px';
+            button.style.top = newY + 'px';
+            button.style.transition = 'all 0.3s ease';
+            button.style.transform = 'scale(0.9)';
+            
+            setTimeout(function() {
+                button.style.transform = 'scale(1)';
+            }, 300);
+        }
+
+        function catchButton(button, type) {
+            buttonClickCounts[type]++;
+            
+            if (buttonClickCounts[type] === 1) {
+                button.textContent = type === 'sleepy' ? '😴 Bắt được rồi!' : '😑 Bắt được rồi!';
+                button.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
+                document.getElementById('gameHint').textContent = '🎉 Tuyệt! Giờ bạn có thể chơi game Arkanoid để lấy trái tim! 💖';
+                
+                setTimeout(function() {
+                    startArkanoidGame();
+                }, 2000);
+            }
         }
 
         function startSurprise() {
             debug('Start surprise clicked!');
+            
+            // Reset states for fresh start
+            currentIndex = 0;
+            finalMessageShown = false;
             
             // 🎵 START YOUR UPLOADED MUSIC
             var music = document.getElementById('backgroundMusic');
@@ -478,6 +609,9 @@
             
             // Show art container
             document.getElementById('artContainer').style.display = 'block';
+            
+            // Clear any existing content
+            document.getElementById('artContainer').textContent = '';
             
             // Start typing animation
             debug('Starting typewriter');
@@ -515,6 +649,352 @@
         function testClick() {
             debug('Test click works!');
             alert('Click detection working!');
+        }
+
+        // 🎮 ARKANOID GAME
+        function startArkanoidGame() {
+            debug('Starting Arkanoid game');
+            
+            // Hide everything else
+            document.querySelector('.container').style.display = 'none';
+            
+            // Create game container
+            var gameContainer = document.createElement('div');
+            gameContainer.className = 'game-container';
+            gameContainer.innerHTML = `
+                <h2 style="color: #ff6b6b; margin-bottom: 20px;">💖 ARKANOID FOR SMINKY 💖</h2>
+                <div class="game-ui">
+                    <span id="gameScore">Score: 0</span> | 
+                    <span id="gameHearts">Hearts: ❤️❤️❤️</span> | 
+                    <span id="gameObjective">🎯 Break all bricks to get the heart!</span>
+                </div>
+                <canvas id="gameCanvas" class="game-canvas" width="600" height="400"></canvas>
+                <div class="game-controls">
+                    🖱️ Move mouse to control paddle | 💥 Break the protective bricks to reach the heart! 💖
+                </div>
+                <button onclick="restartGame()" style="margin-top: 15px; padding: 10px 20px; background: #ff6b6b; color: white; border: none; border-radius: 20px; cursor: pointer;">
+                    🔄 Restart Game
+                </button>
+            `;
+            
+            document.body.appendChild(gameContainer);
+            
+            // Initialize game
+            initArkanoidGame();
+        }
+
+        // Game variables
+        var canvas, ctx;
+        var paddle = { x: 250, y: 370, width: 100, height: 15, speed: 8 };
+        var ball = { x: 300, y: 200, dx: 4, dy: 4, radius: 8 };
+        var bricks = [];
+        var score = 0;
+        var hearts = 3;
+        var gameRunning = false;
+        var pentagon = { x: 300, y: 200, size: 60 };
+
+        function initArkanoidGame() {
+            canvas = document.getElementById('gameCanvas');
+            ctx = canvas.getContext('2d');
+            
+            // Create protective bricks around pentagon
+            createBricks();
+            
+            // Start game loop
+            gameRunning = true;
+            
+            // Mouse control
+            canvas.addEventListener('mousemove', function(e) {
+                var rect = canvas.getBoundingClientRect();
+                paddle.x = e.clientX - rect.left - paddle.width / 2;
+                
+                // Keep paddle in bounds
+                if (paddle.x < 0) paddle.x = 0;
+                if (paddle.x > canvas.width - paddle.width) paddle.x = canvas.width - paddle.width;
+            });
+            
+            gameLoop();
+        }
+
+        function createBricks() {
+            bricks = [];
+            var centerX = canvas.width / 2;
+            var centerY = canvas.height / 2;
+            
+            // Create concentric circles of bricks around pentagon
+            for (var ring = 0; ring < 3; ring++) {
+                var radius = 80 + ring * 30;
+                var bricksInRing = 8 + ring * 4;
+                
+                for (var i = 0; i < bricksInRing; i++) {
+                    var angle = (i / bricksInRing) * 2 * Math.PI;
+                    var x = centerX + Math.cos(angle) * radius - 20;
+                    var y = centerY + Math.sin(angle) * radius - 10;
+                    
+                    bricks.push({
+                        x: x,
+                        y: y,
+                        width: 40,
+                        height: 20,
+                        color: ring === 0 ? '#ff6b6b' : ring === 1 ? '#feca57' : '#48dbfb',
+                        destroyed: false
+                    });
+                }
+            }
+        }
+
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background
+            var gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#1e3c72');
+            gradient.addColorStop(1, '#2a5298');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Update ball position
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+            
+            // Ball collision with walls
+            if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) {
+                ball.dx = -ball.dx;
+            }
+            if (ball.y < ball.radius) {
+                ball.dy = -ball.dy;
+            }
+            
+            // Ball collision with bottom (lose heart)
+            if (ball.y > canvas.height) {
+                hearts--;
+                resetBall();
+                updateUI();
+                
+                if (hearts <= 0) {
+                    gameOver();
+                    return;
+                }
+            }
+            
+            // Ball collision with paddle
+            if (ball.y > paddle.y - ball.radius && 
+                ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+                ball.dy = -Math.abs(ball.dy); // Always bounce up
+                
+                // Add some angle based on where it hits the paddle
+                var hitPos = (ball.x - paddle.x) / paddle.width;
+                ball.dx = (hitPos - 0.5) * 8;
+            }
+            
+            // Ball collision with bricks
+            for (var i = 0; i < bricks.length; i++) {
+                var brick = bricks[i];
+                if (!brick.destroyed &&
+                    ball.x > brick.x && ball.x < brick.x + brick.width &&
+                    ball.y > brick.y && ball.y < brick.y + brick.height) {
+                    
+                    brick.destroyed = true;
+                    ball.dy = -ball.dy;
+                    score += 10;
+                    updateUI();
+                    
+                    // Check if all bricks destroyed
+                    if (bricks.every(b => b.destroyed)) {
+                        gameWin();
+                        return;
+                    }
+                    break;
+                }
+            }
+            
+            // Draw game objects
+            drawBricks();
+            drawPentagon();
+            drawHeart();
+            drawPaddle();
+            drawBall();
+            
+            requestAnimationFrame(gameLoop);
+        }
+
+        function drawBricks() {
+            for (var i = 0; i < bricks.length; i++) {
+                var brick = bricks[i];
+                if (!brick.destroyed) {
+                    ctx.fillStyle = brick.color;
+                    ctx.fillRect(brick.x, brick.y, brick.width, brick.height);
+                    
+                    // Add border
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(brick.x, brick.y, brick.width, brick.height);
+                }
+            }
+        }
+
+        function drawPentagon() {
+            var centerX = pentagon.x;
+            var centerY = pentagon.y;
+            var size = pentagon.size;
+            
+            ctx.beginPath();
+            for (var i = 0; i < 5; i++) {
+                var angle = (i * 2 * Math.PI) / 5 - Math.PI / 2;
+                var x = centerX + Math.cos(angle) * size;
+                var y = centerY + Math.sin(angle) * size;
+                
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+            
+            // Fill with gradient
+            var gradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, size);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+            gradient.addColorStop(1, 'rgba(255, 107, 107, 0.6)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            // Border
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+        }
+
+        function drawHeart() {
+            var centerX = pentagon.x;
+            var centerY = pentagon.y;
+            
+            ctx.font = '30px Arial';
+            ctx.fillStyle = '#ff1744';
+            ctx.textAlign = 'center';
+            ctx.fillText('💖', centerX, centerY + 10);
+        }
+
+        function drawPaddle() {
+            var gradient = ctx.createLinearGradient(paddle.x, paddle.y, paddle.x + paddle.width, paddle.y);
+            gradient.addColorStop(0, '#ff6b6b');
+            gradient.addColorStop(1, '#ff9ff3');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#feca57';
+            ctx.fill();
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+        }
+
+        function resetBall() {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            ball.dx = (Math.random() - 0.5) * 6;
+            ball.dy = 4;
+        }
+
+        function updateUI() {
+            document.getElementById('gameScore').textContent = 'Score: ' + score;
+            document.getElementById('gameHearts').textContent = 'Hearts: ' + '❤️'.repeat(hearts);
+        }
+
+        function gameWin() {
+            gameRunning = false;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.font = '40px Arial';
+            ctx.fillStyle = '#ff6b6b';
+            ctx.textAlign = 'center';
+            ctx.fillText('🎉 YOU WON! 🎉', canvas.width / 2, canvas.height / 2 - 40);
+            
+            ctx.font = '24px Arial';
+            ctx.fillStyle = 'white';
+            ctx.fillText('You got the heart! 💖', canvas.width / 2, canvas.height / 2);
+            ctx.fillText('Sminky is so lucky to have you! 💕', canvas.width / 2, canvas.height / 2 + 40);
+            
+            setTimeout(function() {
+                showFinalGameMessage();
+            }, 3000);
+        }
+
+        function gameOver() {
+            gameRunning = false;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.font = '40px Arial';
+            ctx.fillStyle = '#ff6b6b';
+            ctx.textAlign = 'center';
+            ctx.fillText('💔 GAME OVER 💔', canvas.width / 2, canvas.height / 2 - 20);
+            
+            ctx.font = '20px Arial';
+            ctx.fillStyle = 'white';
+            ctx.fillText('Click restart to try again!', canvas.width / 2, canvas.height / 2 + 20);
+        }
+
+        function restartGame() {
+            score = 0;
+            hearts = 3;
+            resetBall();
+            createBricks();
+            updateUI();
+            gameRunning = true;
+            gameLoop();
+        }
+
+        function showFinalGameMessage() {
+            document.body.innerHTML = `
+                <div style="
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 100vh;
+                    background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+                    background-size: 400% 400%;
+                    animation: gradientShift 8s ease infinite;
+                    text-align: center;
+                    color: white;
+                    font-family: 'Courier New', monospace;
+                ">
+                    <h1 style="font-size: 3em; margin-bottom: 30px;">🎉 CONGRATULATIONS! 🎉</h1>
+                    <h2 style="font-size: 2em; margin-bottom: 20px;">💖 You've collected all the hearts! 💖</h2>
+                    <p style="font-size: 1.5em; margin-bottom: 40px;">
+                        Just like in this game, you've broken through all barriers<br>
+                        to reach my heart, dear Sminky! 💕
+                    </p>
+                    <div style="
+                        background: rgba(255, 255, 255, 0.1);
+                        padding: 30px;
+                        border-radius: 20px;
+                        border: 2px solid rgba(255, 255, 255, 0.3);
+                        max-width: 600px;
+                    ">
+                        <h3 style="color: #ff6b6b; margin-bottom: 20px;">🌟 Final Birthday Message 🌟</h3>
+                        <p style="font-size: 1.2em; line-height: 1.6;">
+                            Happy Birthday, my beautiful Sminky! 🎂<br><br>
+                            This entire surprise - the art, the music, the game - 
+                            was coded with love just for you! 💻💕<br><br>
+                            You make every day feel like a celebration! 🎉<br><br>
+                            I love you more than all the code in the world! 👨‍💻❤️👩‍💻
+                        </p>
+                    </div>
+                    <div style="margin-top: 30px; font-size: 2em;">
+                        💕 ✨ 🎂 🎮 💖 🌟 💕
+                    </div>
+                </div>
+            `;
         }
     </script>
 </body>

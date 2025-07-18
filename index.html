@@ -211,11 +211,10 @@
     
     <div class="hearts" id="hearts"></div>
 
-    <!-- 🎵 BACKGROUND MUSIC -->
+    <!-- 🎵 BACKGROUND MUSIC - Upload your own song -->
     <audio id="backgroundMusic" loop volume="0.4">
-        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
-        <source src="trinh.mp3" type="audio/mpeg">
-        <!-- Fallback: Tạo nhạc đơn giản bằng Web Audio API -->
+        <source src="sminky-birthday-song.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
     </audio>
 
     <!-- 🎵 MUSIC CONTROLS -->
@@ -240,7 +239,7 @@
             </button>
             <p style="font-size: 14px; margin-top: 20px; opacity: 0.8;">
                 💡 Tip: Turn your phone to landscape mode for best experience!<br>
-                🎵 Music will start when you begin the surprise!
+                🎵 Your special birthday song will play when you start!
             </p>
         </div>
 
@@ -318,48 +317,19 @@
             }, 2000);
         }
 
-        // 🎵 CREATE SIMPLE MELODY if no audio file available
-        function createSimpleMelody() {
-            if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
-                var AudioContext = window.AudioContext || window.webkitAudioContext;
-                var audioContext = new AudioContext();
-                
-                function playNote(frequency, duration, delay) {
-                    setTimeout(function() {
-                        var oscillator = audioContext.createOscillator();
-                        var gainNode = audioContext.createGain();
-                        
-                        oscillator.connect(gainNode);
-                        gainNode.connect(audioContext.destination);
-                        
-                        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
-                        oscillator.type = 'sine';
-                        
-                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-                        
-                        oscillator.start();
-                        oscillator.stop(audioContext.currentTime + duration);
-                    }, delay);
-                }
-                
-                // Simple "Happy Birthday" melody
-                var melody = [
-                    {freq: 262, dur: 0.5, delay: 0},     // C
-                    {freq: 262, dur: 0.3, delay: 600},   // C
-                    {freq: 294, dur: 0.8, delay: 1000},  // D
-                    {freq: 262, dur: 0.8, delay: 1900},  // C
-                    {freq: 349, dur: 0.8, delay: 2800},  // F
-                    {freq: 330, dur: 1.5, delay: 3700}   // E
-                ];
-                
-                melody.forEach(function(note) {
-                    playNote(note.freq, note.dur, note.delay);
-                });
-                
-                debug('Playing generated melody');
-                showMusicInfo('Playing simple birthday tune');
-            }
+        // 🎵 MUSIC FILE READY CHECK
+        function checkMusicFile() {
+            var music = document.getElementById('backgroundMusic');
+            
+            music.addEventListener('canplaythrough', function() {
+                debug('Music file loaded successfully');
+                showMusicInfo('Your birthday song is ready! 🎵');
+            });
+            
+            music.addEventListener('error', function() {
+                debug('Music file not found or error loading');
+                showMusicInfo('Upload your music file as "sminky-birthday-song.mp3"');
+            });
         }
 
         // Create falling hearts
@@ -491,18 +461,16 @@
         function startSurprise() {
             debug('Start surprise clicked!');
             
-            // 🎵 START BACKGROUND MUSIC
+            // 🎵 START YOUR UPLOADED MUSIC
             var music = document.getElementById('backgroundMusic');
             music.play().then(function() {
                 musicPlaying = true;
                 document.getElementById('musicButton').textContent = '🎵';
-                showMusicInfo('Birthday music started! 🎵');
+                showMusicInfo('Your special song is playing! 🎵');
                 debug('Music started successfully');
             }).catch(function(error) {
-                debug('Music autoplay blocked: ' + error.message);
-                showMusicInfo('Click 🎵 to play music');
-                // Fallback: create simple melody
-                createSimpleMelody();
+                debug('Music play failed: ' + error.message);
+                showMusicInfo('Music blocked - click 🎵 to play manually');
             });
             
             // Hide start screen
@@ -520,6 +488,7 @@
         window.addEventListener('load', function() {
             debug('Page loaded');
             createHearts();
+            checkMusicFile();
             
             // Prime audio for mobile devices
             document.addEventListener('touchstart', function() {
@@ -536,9 +505,9 @@
                 startSurprise();
             });
 
-            // Show music info on load
+            // Show music status on load
             setTimeout(function() {
-                showMusicInfo('Music ready! Click start to begin 🎵');
+                showMusicInfo('Upload "sminky-birthday-song.mp3" for music! 🎵');
             }, 1000);
         });
 

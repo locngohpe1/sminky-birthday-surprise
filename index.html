@@ -288,11 +288,11 @@
                 <span class="emoji">🎂</span> Ready for your special birthday surprise? <span class="emoji">🎂</span>
             </p>
             <button class="start-btn" onclick="startSurprise()" id="startButton">
-                <span class="emoji">✨</span> Start the Magic <span class="emoji">✨</span>
+                <span class="emoji">✨</span> ~ Let's start! ~ <span class="emoji">✨</span>
             </button>
             <p style="font-size: 14px; margin-top: 20px; opacity: 0.8;">
-                💡 Tip: Turn your phone to landscape mode for best experience!<br>
-                🎵 Your special birthday song will play when you start!
+                💡 Tip: Bạn chúi mà dùng điện thoại nhớ quay ngang màn hình nhé!<br>
+                🎵 Nhớ bật loa hết cỡ để cảm nhận nhạc sinh nhật nha!
             </p>
         </div>
 
@@ -509,7 +509,7 @@
                 var finalMessage = document.createElement('div');
                 finalMessage.className = 'love-message';
                 finalMessage.style.animation = 'pulse 2s infinite';
-                finalMessage.innerHTML = '<h2 style="color: black; font-weight: bold;">💕 Happy Birthday, Beautiful! 💕</h2>' +
+                finalMessage.innerHTML = '<h2 style="color: black; font-weight: bold;">💕 Happy Birthday, Bubu Sushi! 💕</h2>' +
                     '<p style="color: black; font-weight: bold;">Thank you for being the most amazing girlfriend in the world!</p>' +
                     '<p style="color: black; font-weight: bold;">I love you more than words can express! 💖</p>' +
                     '<div style="margin-top: 15px;">' +
@@ -533,18 +533,18 @@
             gameInvitation.className = 'game-invitation';
             gameInvitation.innerHTML = `
                 <div style="text-align: center; margin-top: 30px; padding: 25px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 2px solid rgba(255, 182, 193, 0.5);">
-                    <h3 style="color: black; font-weight: bold;">🎮 Surprise Game cho Sminky! 🎮</h3>
-                    <p style="color: black; font-weight: bold; margin-bottom: 25px;">Sẵn sàng chơi một game nhỏ để lấy trái tim cuối cùng? 💖</p>
+                    <h3 style="color: black; font-weight: bold;">🎮 Mini game có thưởng cho bạn chúi Sminky nè! 🎮</h3>
+                    <p style="color: black; font-weight: bold; margin-bottom: 25px;">Sẵn sàng chơi một minigame cuối để lấy trái tim chưa? 💖</p>
                     <div id="runawayButtons" style="display: flex; gap: 20px; justify-content: center;">
                         <button id="sleepyBtn" class="runaway-btn" onmouseover="runAway(this)" onclick="catchButton(this, 'sleepy')" style="color: black; font-weight: bold;">
-                            😴 Đang buồn ngủ
+                            😴 Đang buồn ngủ (đố bắt)
                         </button>
                         <button id="lazyBtn" class="runaway-btn" onmouseover="runAway(this)" onclick="catchButton(this, 'lazy')" style="color: black; font-weight: bold;">  
-                            😑 Đang bùn ẻ
+                            😑 Đang bùn ẻ (đố bắt)
                         </button>
                     </div>
                     <p id="gameHint" style="margin-top: 15px; font-size: 14px; opacity: 0.8; color: #feca57;">
-                        💡 Hint: Di chuột vào button và chase theo nó! Click 2 lần để bắt được! 🏃‍♀️
+                        💡 Hint: Click chuột vào button để đuổi theo nó! Click 2 lần để bắt! 🏃‍♀️
                     </p>
                 </div>
             `;
@@ -560,7 +560,7 @@
             // Only run away 3 times max, then stop
             if (buttonRunawayCounts[buttonType] >= 3) {
                 button.style.cursor = 'pointer';
-                button.title = 'Ready to catch! Click me!';
+                button.title = 'Đố bắt được tui!';
                 return;
             }
             
@@ -608,7 +608,7 @@
                 button.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
                 button.style.color = 'black';
                 button.style.fontWeight = 'bold';
-                document.getElementById('gameHint').textContent = '🎉 Tuyệt! Giờ bạn có thể chơi game Arkanoid để lấy trái tim! 💖';
+                document.getElementById('gameHint').textContent = '🎉 Tuyệt! Bạn có thể chơi game cúi để lấy trái tim cuối! 💖';
                 
                 setTimeout(function() {
                     // Only start game if not already created
@@ -712,7 +712,7 @@
             var gameContainer = document.createElement('div');
             gameContainer.className = 'game-container';
             gameContainer.innerHTML = `
-                <h2 style="color: #ff6b6b; margin-bottom: 20px;">💖 ARKANOID FOR SMINKY 💖</h2>
+                <h2 style="color: #ff6b6b; margin-bottom: 20px;">💖 HEART HUNTER 💖</h2>
                 <div id="gameIntro" style="
                     background: rgba(255, 255, 255, 0.1);
                     padding: 30px;
@@ -723,7 +723,7 @@
                     color: #feca57;
                 ">
                     <h3 style="color: #ff6b6b; margin-bottom: 15px;">🎯 Mission Brief</h3>
-                    <p style="margin-bottom: 20px;">Sẵn sàng chơi giải cứu trái tim chưa bà =)))</p>
+                    <p style="margin-bottom: 20px;">Sẵn sàng chơi game cuối chưa bà =)))</p>
                     <div id="countdown" style="
                         font-size: 48px;
                         font-weight: bold;
@@ -734,11 +734,11 @@
                 <div class="game-ui" style="display: none;">
                     <span id="gameScore">Score: 0</span> | 
                     <span id="gameHearts">Hearts: ❤️❤️❤️❤️❤️❤️</span> | 
-                    <span id="gameObjective">🎯 Break all bricks to get the heart!</span>
+                    <span id="gameObjective">🎯 Giải cứu trái tim bằng cách đập hết vật cản!</span>
                 </div>
                 <canvas id="gameCanvas" class="game-canvas" width="600" height="400" style="display: none;"></canvas>
                 <div class="game-controls" style="display: none;">
-                    🖱️ Move mouse to control paddle | 🖱️ Click to launch ball | 💥 Break the protective bricks to reach the heart! 💖
+                    🖱️ Kéo trái phải để di chuyển tấm phản | 🖱️ Click để bắn bóng | 💥 Phá hết gạch để cứu trái tim (phải bắt hết gạch)! 💖
                 </div>
                 <button onclick="restartGame()" style="
                     display: none;
@@ -750,7 +750,7 @@
                     border-radius: 20px; 
                     cursor: pointer;
                 " id="restartBtn">
-                    🔄 Restart Game
+                    🔄 Chơi lại
                 </button>
             `;
             
@@ -1102,12 +1102,12 @@
             ctx.font = '40px "Times New Roman"';
             ctx.fillStyle = '#ff6b6b';
             ctx.textAlign = 'center';
-            ctx.fillText('🎉 YOU WON! 🎉', canvas.width / 2, canvas.height / 2 - 40);
+            ctx.fillText('🎉 Chúc mừng chúi đã chiến thắng! 🎉', canvas.width / 2, canvas.height / 2 - 40);
             
             ctx.font = '24px "Times New Roman"';
             ctx.fillStyle = 'white';
-            ctx.fillText('You got the heart! 💖', canvas.width / 2, canvas.height / 2);
-            ctx.fillText('Sminky is so lucky to have you! 💕', canvas.width / 2, canvas.height / 2 + 40);
+            ctx.fillText('Chúi đã dành được cỏa tim cuối cùng! 💖', canvas.width / 2, canvas.height / 2);
+            ctx.fillText('Adudu thật may mắn có người yêu tuyệt vời như bạn! 💕', canvas.width / 2, canvas.height / 2 + 40);
             
             setTimeout(function() {
                 showFinalGameMessage();
@@ -1122,11 +1122,11 @@
             ctx.font = '40px "Times New Roman"';
             ctx.fillStyle = '#ff6b6b';
             ctx.textAlign = 'center';
-            ctx.fillText('💔 GAME OVER 💔', canvas.width / 2, canvas.height / 2 - 20);
+            ctx.fillText('💔 THUA RÙI 💔', canvas.width / 2, canvas.height / 2 - 20);
             
             ctx.font = '20px "Times New Roman"';
             ctx.fillStyle = 'white';
-            ctx.fillText('Click restart to try again!', canvas.width / 2, canvas.height / 2 + 20);
+            ctx.fillText('Click để chơi lại!', canvas.width / 2, canvas.height / 2 + 20);
         }
 
         function restartGame() {
@@ -1160,11 +1160,11 @@
                     color: white;
                     font-family: 'Times New Roman', serif;
                 ">
-                    <h1 style="font-size: 3em; margin-bottom: 30px; color: black;">🎉 CONGRATULATIONS! 🎉</h1>
-                    <h2 style="font-size: 2em; margin-bottom: 20px; color: black;">💖 You've collected all the hearts! 💖</h2>
+                    <h1 style="font-size: 3em; margin-bottom: 30px; color: black;">🎉 CHÚC MỪNG BẠN CHÚI! 🎉</h1>
+                    <h2 style="font-size: 2em; margin-bottom: 20px; color: black;">💖 Bạn đã lấy được toàn bộ trái tim (cỡ 2 tỉ quả :D) 💖</h2>
                     <p style="font-size: 1.5em; margin-bottom: 40px; color: black;">
-                        Just like in this game, you've broken through all barriers<br>
-                        to reach my heart, dear Sminky! 💕
+                        Cũng như game này, tuổi mới nhiều khởi đầu mới, nhiều cơ hội mới nhưng cũng nhiều khó khăn mới<br>
+                        để đạt trái tim, hoặc là tới hạnh phúc! 💕
                     </p>
                     <div style="
                         background: rgba(255, 255, 255, 0.1);
@@ -1175,11 +1175,10 @@
                     ">
                         <h3 style="color: black; margin-bottom: 20px;">🌟 Final Birthday Message 🌟</h3>
                         <p style="font-size: 1.2em; line-height: 1.6; color: black;">
+                            Luôn cố gắng nhá bồ chúi, bồ có tớ mà hihi💕<br><br>
                             Happy Birthday, my beautiful Sminky! 🎂<br><br>
-                            This entire surprise - the art, the music, the game - 
-                            was coded with love just for you! 💻💕<br><br>
                             You make every day feel like a celebration! 🎉<br><br>
-                            I love you more than all the code in the world! 👨‍💻❤️👩‍💻
+                            I love you more than anything in this world! 👨‍💻❤️👩‍💻
                         </p>
                     </div>
                     <div style="margin-top: 30px; font-size: 2em;">
@@ -1224,14 +1223,14 @@
             window.shareExperience = function() {
                 if (navigator.share) {
                     navigator.share({
-                        title: '💕 Birthday Surprise for Sminky',
-                        text: 'Someone made an amazing interactive birthday surprise! 🎂✨',
+                        title: '💕 Quà sinh nhật đặc biệt cho người xinh nhút thế gian',
+                        text: 'Ai đó chuẩn bị quà cho bạn nè! 🎂✨',
                         url: window.location.href
                     }).catch(console.error);
                 } else {
                     // Fallback: copy URL to clipboard
                     navigator.clipboard.writeText(window.location.href).then(function() {
-                        alert('🔗 Link copied! Share this special moment! 💕');
+                        alert('🔗 Link copied! Share this moment! 💕');
                     });
                 }
             };

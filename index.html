@@ -548,10 +548,21 @@
         }
 
         var buttonClickCounts = { sleepy: 0, lazy: 0 };
-        var runawayPositions = {};
+        var buttonRunawayCounts = { sleepy: 0, lazy: 0 }; // Track how many times button ran away
 
         function runAway(button) {
-            if (buttonClickCounts[button.id.replace('Btn', '')] >= 1) return;
+            var buttonType = button.id.replace('Btn', '');
+            
+            // Only run away 3 times max, then stop
+            if (buttonRunawayCounts[buttonType] >= 3) {
+                button.style.cursor = 'pointer';
+                button.title = 'Ready to catch! Click me!';
+                return;
+            }
+            
+            if (buttonClickCounts[buttonType] >= 1) return;
+            
+            buttonRunawayCounts[buttonType]++;
             
             var container = document.querySelector('.container');
             var containerRect = container.getBoundingClientRect();
@@ -566,8 +577,21 @@
             button.style.transition = 'all 0.3s ease';
             button.style.transform = 'scale(0.9)';
             
+            // Show escape count hint
+            var escapeText = buttonRunawayCounts[buttonType] < 3 
+                ? `😏 Escaped ${buttonRunawayCounts[buttonType]}/3 times!`
+                : `😅 Can't run anymore! Click me!`;
+            
+            var hint = document.getElementById('gameHint');
+            hint.textContent = escapeText;
+            hint.style.color = buttonRunawayCounts[buttonType] >= 3 ? '#4ecdc4' : '#feca57';
+            
             setTimeout(function() {
                 button.style.transform = 'scale(1)';
+                if (buttonRunawayCounts[buttonType] >= 3) {
+                    button.style.boxShadow = '0 0 20px #4ecdc4';
+                    button.style.animation = 'pulse 1s infinite';
+                }
             }, 300);
         }
 
@@ -663,30 +687,91 @@
             gameContainer.className = 'game-container';
             gameContainer.innerHTML = `
                 <h2 style="color: #ff6b6b; margin-bottom: 20px;">💖 ARKANOID FOR SMINKY 💖</h2>
-                <div class="game-ui">
+                <div id="gameIntro" style="
+                    background: rgba(255, 255, 255, 0.1);
+                    padding: 30px;
+                    border-radius: 20px;
+                    border: 2px solid #ff6b6b;
+                    margin: 20px 0;
+                    font-size: 24px;
+                    color: #feca57;
+                ">
+                    <h3 style="color: #ff6b6b; margin-bottom: 15px;">🎯 Mission Brief</h3>
+                    <p style="margin-bottom: 20px;">Sẵn sàng chơi giải cứu trái tim chưa bà =)))</p>
+                    <div id="countdown" style="
+                        font-size: 48px;
+                        font-weight: bold;
+                        color: #ff6b6b;
+                        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+                    ">5</div>
+                </div>
+                <div class="game-ui" style="display: none;">
                     <span id="gameScore">Score: 0</span> | 
                     <span id="gameHearts">Hearts: ❤️❤️❤️</span> | 
                     <span id="gameObjective">🎯 Break all bricks to get the heart!</span>
                 </div>
-                <canvas id="gameCanvas" class="game-canvas" width="600" height="400"></canvas>
-                <div class="game-controls">
-                    🖱️ Move mouse to control paddle | 💥 Break the protective bricks to reach the heart! 💖
+                <canvas id="gameCanvas" class="game-canvas" width="600" height="400" style="display: none;"></canvas>
+                <div class="game-controls" style="display: none;">
+                    🖱️ Move mouse to control paddle | 🖱️ Click to launch ball | 💥 Break the protective bricks to reach the heart! 💖
                 </div>
-                <button onclick="restartGame()" style="margin-top: 15px; padding: 10px 20px; background: #ff6b6b; color: white; border: none; border-radius: 20px; cursor: pointer;">
+                <button onclick="restartGame()" style="
+                    display: none;
+                    margin-top: 15px; 
+                    padding: 10px 20px; 
+                    background: #ff6b6b; 
+                    color: white; 
+                    border: none; 
+                    border-radius: 20px; 
+                    cursor: pointer;
+                " id="restartBtn">
                     🔄 Restart Game
                 </button>
             `;
             
             document.body.appendChild(gameContainer);
             
-            // Initialize game
-            initArkanoidGame();
+            // Start countdown
+            startGameCountdown();
+        }
+
+        function startGameCountdown() {
+            var countdownElement = document.getElementById('countdown');
+            var count = 5;
+            
+            var countdownInterval = setInterval(function() {
+                count--;
+                
+                if (count > 0) {
+                    countdownElement.textContent = count;
+                    countdownElement.style.transform = 'scale(1.5)';
+                    setTimeout(function() {
+                        countdownElement.style.transform = 'scale(1)';
+                    }, 200);
+                } else {
+                    countdownElement.textContent = 'GO! 🚀';
+                    countdownElement.style.color = '#4ecdc4';
+                    
+                    setTimeout(function() {
+                        // Hide intro, show game
+                        document.getElementById('gameIntro').style.display = 'none';
+                        document.querySelector('.game-ui').style.display = 'block';
+                        document.getElementById('gameCanvas').style.display = 'block';
+                        document.querySelector('.game-controls').style.display = 'block';
+                        document.getElementById('restartBtn').style.display = 'inline-block';
+                        
+                        // Initialize game
+                        initArkanoidGame();
+                    }, 1000);
+                    
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
         }
 
         // Game variables
         var canvas, ctx;
         var paddle = { x: 250, y: 370, width: 100, height: 15, speed: 8 };
-        var ball = { x: 300, y: 200, dx: 4, dy: 4, radius: 8 };
+        var ball = { x: 300, y: 350, dx: 2.5, dy: -2.5, radius: 8 }; // Slower speed & start from paddle
         var bricks = [];
         var score = 0;
         var hearts = 3;
@@ -700,6 +785,9 @@
             // Create protective bricks around pentagon
             createBricks();
             
+            // Reset ball position to start from paddle
+            resetBall();
+            
             // Start game loop
             gameRunning = true;
             
@@ -711,6 +799,20 @@
                 // Keep paddle in bounds
                 if (paddle.x < 0) paddle.x = 0;
                 if (paddle.x > canvas.width - paddle.width) paddle.x = canvas.width - paddle.width;
+                
+                // If ball is attached to paddle (game start), move ball with paddle
+                if (ball.y >= paddle.y - ball.radius - 5) {
+                    ball.x = paddle.x + paddle.width / 2;
+                }
+            });
+            
+            // Click to launch ball
+            canvas.addEventListener('click', function() {
+                if (ball.y >= paddle.y - ball.radius - 5) {
+                    // Launch ball upward with slight random angle
+                    ball.dy = -2.5;
+                    ball.dx = (Math.random() - 0.5) * 3; // Random horizontal speed
+                }
             });
             
             gameLoop();
@@ -756,9 +858,11 @@
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Update ball position
-            ball.x += ball.dx;
-            ball.y += ball.dy;
+            // Update ball position only if it's moving
+            if (ball.dx !== 0 || ball.dy !== 0) {
+                ball.x += ball.dx;
+                ball.y += ball.dy;
+            }
             
             // Ball collision with walls
             if (ball.x < ball.radius || ball.x > canvas.width - ball.radius) {
@@ -780,22 +884,34 @@
                 }
             }
             
-            // Ball collision with paddle
-            if (ball.y > paddle.y - ball.radius && 
-                ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+            // Ball collision with paddle (improved)
+            if (ball.dy > 0 && // Ball moving down
+                ball.y + ball.radius >= paddle.y && 
+                ball.y - ball.radius <= paddle.y + paddle.height &&
+                ball.x >= paddle.x && 
+                ball.x <= paddle.x + paddle.width) {
+                
                 ball.dy = -Math.abs(ball.dy); // Always bounce up
                 
                 // Add some angle based on where it hits the paddle
-                var hitPos = (ball.x - paddle.x) / paddle.width;
-                ball.dx = (hitPos - 0.5) * 8;
+                var hitPos = (ball.x - paddle.x) / paddle.width; // 0 to 1
+                var maxAngle = 3; // Maximum horizontal speed
+                ball.dx = (hitPos - 0.5) * maxAngle * 2; // -3 to +3
+                
+                // Ensure minimum upward velocity
+                if (Math.abs(ball.dy) < 2) {
+                    ball.dy = ball.dy < 0 ? -2.5 : 2.5;
+                }
             }
             
             // Ball collision with bricks
             for (var i = 0; i < bricks.length; i++) {
                 var brick = bricks[i];
                 if (!brick.destroyed &&
-                    ball.x > brick.x && ball.x < brick.x + brick.width &&
-                    ball.y > brick.y && ball.y < brick.y + brick.height) {
+                    ball.x + ball.radius > brick.x && 
+                    ball.x - ball.radius < brick.x + brick.width &&
+                    ball.y + ball.radius > brick.y && 
+                    ball.y - ball.radius < brick.y + brick.height) {
                     
                     brick.destroyed = true;
                     ball.dy = -ball.dy;
@@ -817,6 +933,14 @@
             drawHeart();
             drawPaddle();
             drawBall();
+            
+            // Show launch instruction if ball is attached
+            if (ball.dx === 0 && ball.dy === 0) {
+                ctx.font = '16px Arial';
+                ctx.fillStyle = '#feca57';
+                ctx.textAlign = 'center';
+                ctx.fillText('Click to launch! 🚀', canvas.width / 2, canvas.height - 30);
+            }
             
             requestAnimationFrame(gameLoop);
         }
@@ -897,10 +1021,45 @@
         }
 
         function resetBall() {
-            ball.x = canvas.width / 2;
-            ball.y = canvas.height / 2;
-            ball.dx = (Math.random() - 0.5) * 6;
-            ball.dy = 4;
+            // Reset ball to paddle position (attached mode)
+            ball.x = paddle.x + paddle.width / 2;
+            ball.y = paddle.y - ball.radius - 2; // Just above paddle
+            ball.dx = 0; // No horizontal movement initially
+            ball.dy = 0; // No vertical movement initially
+            
+            // Show instruction to click
+            setTimeout(function() {
+                if (ball.dy === 0) { // Ball still attached
+                    showTemporaryMessage('Click to launch ball! 🚀');
+                }
+            }, 1000);
+        }
+
+        function showTemporaryMessage(text) {
+            var existingMsg = document.getElementById('tempMessage');
+            if (existingMsg) existingMsg.remove();
+            
+            var tempMsg = document.createElement('div');
+            tempMsg.id = 'tempMessage';
+            tempMsg.style.cssText = `
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.8);
+                color: #feca57;
+                padding: 15px 25px;
+                border-radius: 20px;
+                font-size: 18px;
+                z-index: 1000;
+                animation: pulse 1s infinite;
+            `;
+            tempMsg.textContent = text;
+            document.querySelector('.game-container').appendChild(tempMsg);
+            
+            setTimeout(function() {
+                if (tempMsg) tempMsg.remove();
+            }, 3000);
         }
 
         function updateUI() {
@@ -946,9 +1105,14 @@
         function restartGame() {
             score = 0;
             hearts = 3;
-            resetBall();
             createBricks();
+            resetBall();
             updateUI();
+            
+            // Remove any temporary messages
+            var tempMsg = document.getElementById('tempMessage');
+            if (tempMsg) tempMsg.remove();
+            
             gameRunning = true;
             gameLoop();
         }

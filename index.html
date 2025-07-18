@@ -1,1 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💕 Happy Birthday My Sminky Girlfriend 💕</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            animation: gradientShift 8s ease infinite;
+            font-family: 'Courier New', monospace;
+            color: white;
+            overflow-x: auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+            max-width: 90vw;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .start-btn {
+            font-size: 24px;
+            padding: 15px 30px;
+            background: linear-gradient(45deg, #ff6b6b, #ff9ff3);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            margin: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+
+        .art-container {
+            display: none;
+            white-space: pre-wrap;
+            font-size: 8px;
+            line-height: 1.1;
+            text-align: left;
+            overflow-x: auto;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            margin: 20px 0;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        @media (max-width: 768px) {
+            .art-container {
+                font-size: 4px;
+                padding: 5px;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .art-container {
+                font-size: 10px;
+            }
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff6b6b;
+            font-size: 20px;
+            animation: fall 8s linear infinite;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -10%;
+                opacity: 1;
+            }
+            100% {
+                top: 110%;
+                opacity: 0;
+            }
+        }
+
+        .love-message {
+            font-size: 18px;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 182, 193, 0.5);
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .debug {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="debug" id="debugInfo">Debug: Ready</div>
+    
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="container">
+        <div id="startScreen">
+            <h1>💕 For My Sminky Girlfriend 💕</h1>
+            <p class="love-message">
+                <span class="emoji">🎂</span> Ready for your special birthday surprise? <span class="emoji">🎂</span>
+            </p>
+            <button class="start-btn" onclick="startSurprise()" id="startButton">
+                <span class="emoji">✨</span> Start the Magic <span class="emoji">✨</span>
+            </button>
+            <p style="font-size: 14px; margin-top: 20px; opacity: 0.8;">
+                💡 Tip: Turn your phone to landscape mode for best experience!
+            </p>
+        </div>
+
+        <div class="art-container" id="artContainer"></div>
+    </div>
+
+    <script>
+        // Debug function
+        function debug(msg) {
+            console.log(msg);
+            document.getElementById('debugInfo').textContent = 'Debug: ' + msg;
+        }
+
+        debug('Script loaded');
+
+        // Create falling hearts
+        function createHearts() {
+            debug('Creating hearts');
+            var heartsContainer = document.getElementById('hearts');
+            var heartSymbols = ['💕', '💖', '💗', '💝', '💓', '🌟', '✨', '💫'];
+            
+            setInterval(function() {
+                var heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                heartsContainer.appendChild(heart);
+
+                setTimeout(function() {
+                    heart.remove();
+                }, 8000);
+            }, 300);
+        }
+
+        // Art content with fixed alignment
+        var artContent = '                               💕✨ 💖 💫 🌟 💕 💎 ✨💕\n\n' +
+'   ╔══════════════════════════════════════════════════════════════════════════════╗\n' +
+'   ║                            💖 FOR MY SMINKY GIRLFRIEND 💖                   ║\n' +
+'   ╚══════════════════════════════════════════════════════════════════════════════╝\n\n' +
+'                                   🕯️ 🕯️ 🕯️ 🕯️ 🕯️\n' +
+'                                ┌─────────────────────┐\n' +
+'                                │💝 HAPPY BIRTHDAY 💝│\n' +
+'                                └─────────────────────┘\n' +
+'                                🎈 🎈 🎈 🎈 🎈 🎈 🎈\n\n' +
+' ██╗  ██╗ █████╗ ██████╗ ██████╗ ██╗   ██╗    ██████╗ ██╗██████╗ ████████╗██╗  ██╗██████╗  █████╗ ██╗   ██╗\n' +
+' ██║  ██║██╔══██╗██╔══██╗██╔══██╗╚██╗ ██╔╝    ██╔══██╗██║██╔══██╗╚══██╔══╝██║  ██║██╔══██╗██╔══██╗╚██╗ ██╔╝\n' +
+' ███████║███████║██████╔╝██████╔╝ ╚████╔╝     ██████╔╝██║██████╔╝   ██║   ███████║██║  ██║███████║ ╚████╔╝ \n' +
+' ██╔══██║██╔══██║██╔═══╝ ██╔═══╝   ╚██╔╝      ██╔══██╗██║██╔══██╗   ██║   ██╔══██║██║  ██║██╔══██║  ╚██╔╝  \n' +
+' ██║  ██║██║  ██║██║     ██║        ██║       ██████╔╝██║██║  ██║   ██║   ██║  ██║██████╔╝██║  ██║   ██║   \n' +
+' ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝        ╚═╝       ╚═════╝ ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝   ╚═╝   \n\n' +
+' ███╗   ███╗██╗   ██╗    ███████╗███╗   ███╗██╗███╗   ██╗██╗  ██╗██╗   ██╗\n' +
+' ████╗ ████║╚██╗ ██╔╝    ██╔════╝████╗ ████║██║████╗  ██║██║ ██╔╝╚██╗ ██╔╝\n' +
+' ██╔████╔██║ ╚████╔╝     ███████╗██╔████╔██║██║██╔██╗ ██║█████╔╝  ╚████╔╝ \n' +
+' ██║╚██╔╝██║  ╚██╔╝      ╚════██║██║╚██╔╝██║██║██║╚██╗██║██╔═██╗   ╚██╔╝  \n' +
+' ██║ ╚═╝ ██║   ██║       ███████║██║ ╚═╝ ██║██║██║ ╚████║██║  ██╗   ██║   \n' +
+' ╚═╝     ╚═╝   ╚═╝       ╚══════╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝   \n\n' +
+'  ██████╗ ██╗██████╗ ██╗     ███████╗██████╗ ██╗███████╗███╗   ██╗██████╗ \n' +
+' ██╔════╝ ██║██╔══██╗██║     ██╔════╝██╔══██╗██║██╔════╝████╗  ██║██╔══██╗\n' +
+' ██║  ███╗██║██████╔╝██║     █████╗  ██████╔╝██║█████╗  ██╔██╗ ██║██║  ██║\n' +
+' ██║   ██║██║██╔══██╗██║     ██╔══╝  ██╔══██╗██║██╔══╝  ██║╚██╗██║██║  ██║\n' +
+' ╚██████╔╝██║██║  ██║███████╗██║     ██║  ██║██║███████╗██║ ╚████║██████╔╝\n' +
+'  ╚═════╝ ╚═╝╚═╝  ╚═╝╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝╚══════╝╚═╝  ╚═══╝╚═════╝ \n\n' +
+'                       💕 ✨ TO MY SPECIAL SOMEONE ✨ 💕\n\n' +
+'                      ╔═══════════════════════════════════╗\n' +
+'                      ║  💖 You mean the world to me 💖  ║\n' +
+'                      ║ 🌟 Every day with you is magic 🌟║\n' +
+'                      ║💫 You make my heart skip beats 💫║\n' +
+'                      ║ ✨ My beautiful, sweet sminky ✨ ║\n' +          
+'                      ╚═══════════════════════════════════╝\n\n' +
+'                            🌹 🌹 🌹 🌹 🌹 🌹 🌹\n\n' +
+'          💝                                                                💝\n' +
+'            💕    ┌─────────────────────────────────────────────────┐    💕\n' +
+'              💖  │   "Happy Birthday to the most amazing girl      │  💖\n' +
+'              💖  │    who lights up my world every single day!"    │  💖  \n' +
+'            💕    └─────────────────────────────────────────────────┘    💕\n' +
+'          💝                                                                💝\n\n' +
+'                                  🎂 🍰 🧁 🍰 🎂\n\n' +       
+'                           ❤️❤️❤️                   ❤️❤️❤️\n' +     
+'                         ❤️       ❤️              ❤️       ❤️\n' +
+'                       ❤️           ❤️          ❤️            ❤️\n' +
+'                     ❤️                ❤️     ❤️                ❤️\n' +
+'                   ❤️                   💝💖💝                    ❤️\n' +
+'                     ❤️              💖  SMINKY 💖               ❤️\n' +
+'                       ❤️           💝    LOVE   💝            ❤️\n' +
+'                         ❤️           💖FOREVER💖            ❤️\n' +
+'                           ❤️           💝💖💝            ❤️\n' +
+'                             ❤️                          ❤️\n' +
+'                               ❤️                      ❤️\n' +
+'                                 ❤️                  ❤️\n' +
+'                                   ❤️              ❤️\n' +
+'                                     ❤️          ❤️\n' +
+'                                       ❤️      ❤️\n' +
+'                                         ❤️  ❤️\n' +
+'                                           ❤️\n\n' +
+'                          🎊 🎉 🎁 🍾 🥳 🎈 🎂 🕯️ 💐 💕 🌹 ✨\n\n' +
+'                           ┌─ "You are not just my girlfriend, ─┐\n' +
+'                           │   you are my best friend, my love, │\n' +
+'                           │   my everything. Happy Birthday    │\n' +
+'                           │   my sweet, adorable sminky!       │\n' +
+'                           └────────────────────────────────────┘\n\n' +
+'                                 🎵 I LOVE YOU SO MUCH! 🎵\n\n' +
+'                               (💝) (💖) (💕) (💗) (💓) (💝)\n' +
+'               💕 🌟 💖 💫 ✨ 💎 🌹 💕 🌟 💖 💫 ✨ 💎 🌹 💕 🌟 💖 💫 ✨ 💎 🌹';
+
+        var currentIndex = 0;
+        var typingSpeed = 15;
+
+        function typeWriter() {
+            debug('Typing: ' + currentIndex + '/' + artContent.length);
+            var artContainer = document.getElementById('artContainer');
+            
+            if (currentIndex < artContent.length) {
+                artContainer.textContent = artContent.substring(0, currentIndex + 1);
+                currentIndex++;
+                setTimeout(typeWriter, typingSpeed);
+            } else {
+                debug('Typing complete');
+                showFinalMessage();
+            }
+        }
+
+        function showFinalMessage() {
+            debug('Showing final message');
+            setTimeout(function() {
+                var finalMessage = document.createElement('div');
+                finalMessage.className = 'love-message';
+                finalMessage.style.animation = 'pulse 2s infinite';
+                finalMessage.innerHTML = '<h2>💕 Happy Birthday, Beautiful! 💕</h2>' +
+                    '<p>Thank you for being the most amazing girlfriend in the world!</p>' +
+                    '<p>I love you more than words can express! 💖</p>' +
+                    '<div style="margin-top: 15px;">' +
+                    '<span class="emoji">🎂</span>' +
+                    '<span class="emoji">💝</span>' +
+                    '<span class="emoji">🌹</span>' +
+                    '<span class="emoji">💕</span>' +
+                    '</div>';
+                document.querySelector('.container').appendChild(finalMessage);
+            }, 2000);
+        }
+
+        function startSurprise() {
+            debug('Start surprise clicked!');
+            
+            // Hide start screen
+            document.getElementById('startScreen').style.display = 'none';
+            
+            // Show art container
+            document.getElementById('artContainer').style.display = 'block';
+            
+            // Start typing animation
+            debug('Starting typewriter');
+            setTimeout(typeWriter, 1000);
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            debug('Page loaded');
+            createHearts();
+            
+            // Add click event listener as backup
+            document.getElementById('startButton').addEventListener('click', function() {
+                debug('Button clicked via event listener');
+                startSurprise();
+            });
+        });
+
+        // Test function
+        function testClick() {
+            debug('Test click works!');
+            alert('Click detection working!');
+        }
+    </script>
+</body>
+</html>
 

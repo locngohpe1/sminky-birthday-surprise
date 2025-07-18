@@ -155,12 +155,79 @@
             font-size: 12px;
             z-index: 1000;
         }
+
+        /* 🎵 MUSIC CONTROLS STYLES */
+        .music-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .music-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .music-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .music-info {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .music-info.show {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
     <div class="debug" id="debugInfo">Debug: Ready</div>
     
     <div class="hearts" id="hearts"></div>
+
+    <!-- 🎵 BACKGROUND MUSIC -->
+    <audio id="backgroundMusic" loop volume="0.4">
+        <source src="https://www.soundjay.com/misc/sounds/bell-ringing-05.wav" type="audio/wav">
+        <source src="trinh.mp3" type="audio/mpeg">
+        <!-- Fallback: Tạo nhạc đơn giản bằng Web Audio API -->
+    </audio>
+
+    <!-- 🎵 MUSIC CONTROLS -->
+    <div class="music-controls">
+        <button onclick="toggleMusic()" id="musicButton" class="music-btn" title="Toggle Music">🎵</button>
+        <button onclick="changeVolume()" id="volumeButton" class="music-btn" title="Change Volume">🔊</button>
+    </div>
+
+    <!-- 🎵 MUSIC INFO -->
+    <div class="music-info" id="musicInfo">
+        🎵 Background music ready
+    </div>
     
     <div class="container">
         <div id="startScreen">
@@ -172,7 +239,8 @@
                 <span class="emoji">✨</span> Start the Magic <span class="emoji">✨</span>
             </button>
             <p style="font-size: 14px; margin-top: 20px; opacity: 0.8;">
-                💡 Tip: Turn your phone to landscape mode for best experience!
+                💡 Tip: Turn your phone to landscape mode for best experience!<br>
+                🎵 Music will start when you begin the surprise!
             </p>
         </div>
 
@@ -180,6 +248,11 @@
     </div>
 
     <script>
+        // 🎵 MUSIC VARIABLES
+        var musicPlaying = false;
+        var currentVolume = 0.4;
+        var musicEnabled = true;
+
         // Debug function
         function debug(msg) {
             console.log(msg);
@@ -187,6 +260,107 @@
         }
 
         debug('Script loaded');
+
+        // 🎵 MUSIC FUNCTIONS
+        function toggleMusic() {
+            var music = document.getElementById('backgroundMusic');
+            var button = document.getElementById('musicButton');
+            var info = document.getElementById('musicInfo');
+            
+            if (musicPlaying) {
+                music.pause();
+                button.textContent = '🔇';
+                musicPlaying = false;
+                showMusicInfo('Music paused');
+                debug('Music paused');
+            } else {
+                music.play().then(function() {
+                    button.textContent = '🎵';
+                    musicPlaying = true;
+                    showMusicInfo('Music playing');
+                    debug('Music playing');
+                }).catch(function(error) {
+                    debug('Music play failed: ' + error.message);
+                    showMusicInfo('Music blocked by browser');
+                });
+            }
+        }
+
+        function changeVolume() {
+            var music = document.getElementById('backgroundMusic');
+            var button = document.getElementById('volumeButton');
+            
+            if (currentVolume === 0.4) {
+                currentVolume = 0.7;
+                button.textContent = '🔊';
+                showMusicInfo('Volume: High');
+            } else if (currentVolume === 0.7) {
+                currentVolume = 0.1;
+                button.textContent = '🔉';
+                showMusicInfo('Volume: Low');
+            } else {
+                currentVolume = 0.4;
+                button.textContent = '🔊';
+                showMusicInfo('Volume: Medium');
+            }
+            
+            music.volume = currentVolume;
+            debug('Volume changed to: ' + currentVolume);
+        }
+
+        function showMusicInfo(message) {
+            var info = document.getElementById('musicInfo');
+            info.textContent = '🎵 ' + message;
+            info.classList.add('show');
+            
+            setTimeout(function() {
+                info.classList.remove('show');
+            }, 2000);
+        }
+
+        // 🎵 CREATE SIMPLE MELODY if no audio file available
+        function createSimpleMelody() {
+            if (typeof AudioContext !== 'undefined' || typeof webkitAudioContext !== 'undefined') {
+                var AudioContext = window.AudioContext || window.webkitAudioContext;
+                var audioContext = new AudioContext();
+                
+                function playNote(frequency, duration, delay) {
+                    setTimeout(function() {
+                        var oscillator = audioContext.createOscillator();
+                        var gainNode = audioContext.createGain();
+                        
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioContext.destination);
+                        
+                        oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+                        oscillator.type = 'sine';
+                        
+                        gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                        
+                        oscillator.start();
+                        oscillator.stop(audioContext.currentTime + duration);
+                    }, delay);
+                }
+                
+                // Simple "Happy Birthday" melody
+                var melody = [
+                    {freq: 262, dur: 0.5, delay: 0},     // C
+                    {freq: 262, dur: 0.3, delay: 600},   // C
+                    {freq: 294, dur: 0.8, delay: 1000},  // D
+                    {freq: 262, dur: 0.8, delay: 1900},  // C
+                    {freq: 349, dur: 0.8, delay: 2800},  // F
+                    {freq: 330, dur: 1.5, delay: 3700}   // E
+                ];
+                
+                melody.forEach(function(note) {
+                    playNote(note.freq, note.dur, note.delay);
+                });
+                
+                debug('Playing generated melody');
+                showMusicInfo('Playing simple birthday tune');
+            }
+        }
 
         // Create falling hearts
         function createHearts() {
@@ -208,7 +382,7 @@
             }, 300);
         }
 
-        // Art content with fixed alignment
+        // Art content with fixed alignment (keep your existing art content)
         var artContent = '                              💕✨ 💖 💫 🌟 💕 💎 ✨💕\n\n' +
 '   ╔═════════════════════════════════════════════════════════════════════════════╗\n' +
 '   ║                           FOR MY SMINKY GIRLFRIEND                          ║\n' +
@@ -317,6 +491,20 @@
         function startSurprise() {
             debug('Start surprise clicked!');
             
+            // 🎵 START BACKGROUND MUSIC
+            var music = document.getElementById('backgroundMusic');
+            music.play().then(function() {
+                musicPlaying = true;
+                document.getElementById('musicButton').textContent = '🎵';
+                showMusicInfo('Birthday music started! 🎵');
+                debug('Music started successfully');
+            }).catch(function(error) {
+                debug('Music autoplay blocked: ' + error.message);
+                showMusicInfo('Click 🎵 to play music');
+                // Fallback: create simple melody
+                createSimpleMelody();
+            });
+            
             // Hide start screen
             document.getElementById('startScreen').style.display = 'none';
             
@@ -333,11 +521,25 @@
             debug('Page loaded');
             createHearts();
             
+            // Prime audio for mobile devices
+            document.addEventListener('touchstart', function() {
+                var music = document.getElementById('backgroundMusic');
+                music.play().then(function() {
+                    music.pause();
+                    debug('Audio primed for mobile');
+                });
+            }, { once: true });
+            
             // Add click event listener as backup
             document.getElementById('startButton').addEventListener('click', function() {
                 debug('Button clicked via event listener');
                 startSurprise();
             });
+
+            // Show music info on load
+            setTimeout(function() {
+                showMusicInfo('Music ready! Click start to begin 🎵');
+            }, 1000);
         });
 
         // Test function

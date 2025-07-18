@@ -288,11 +288,11 @@
                 <span class="emoji">🎂</span> Ready for your special birthday surprise? <span class="emoji">🎂</span>
             </p>
             <button class="start-btn" onclick="startSurprise()" id="startButton">
-                <span class="emoji">✨</span> ~ Let's start! ~ <span class="emoji">✨</span>
+                <span class="emoji">✨</span> Start the Magic <span class="emoji">✨</span>
             </button>
             <p style="font-size: 14px; margin-top: 20px; opacity: 0.8;">
                 💡 Tip: Bạn chúi mà dùng điện thoại nhớ quay ngang màn hình nhé!<br>
-                🎵 Nhớ bật loa hết cỡ để cảm nhận nhạc sinh nhật nha!
+                🎵 Nhớ bật loa hết cỡ để cảm nhận nhạc sinh nhật nha!<br>
             </p>
         </div>
 
@@ -405,7 +405,7 @@
             }, 300);
         }
 
-        // Art content with fixed alignment
+        // Art content with fixed alignment (keep your existing art content)
         var artContent = '                              💕✨ 💖 💫 🌟 💕 💎 ✨💕\n\n' +
 '   ╔═════════════════════════════════════════════════════════════════════════════╗\n' +
 '   ║                           FOR MY SMINKY GIRLFRIEND                          ║\n' +
@@ -475,7 +475,6 @@
 '                               (💝) (💖) (💕) (💗) (💓) (💝)\n' +
 '               💕 🌟 💖 💫 ✨ 💎 🌹 💕 🌟 💖 💫 ✨ 💎 🌹 💕 🌟 💖 💫 ✨ 💎 🌹';
 
-
         var currentIndex = 0;
         var typingSpeed = 15;
         var finalMessageShown = false; // Prevent duplicate final message
@@ -510,7 +509,7 @@
                 finalMessage.className = 'love-message';
                 finalMessage.style.animation = 'pulse 2s infinite';
                 finalMessage.innerHTML = '<h2 style="color: black; font-weight: bold;">💕 Happy Birthday, Bubu Sushi! 💕</h2>' +
-                    '<p style="color: black; font-weight: bold;">Thank you for being the most amazing girlfriend in the world!</p>' +
+                    '<p style="color: black; font-weight: bold;">Thank you for being the most amazing girlfriend in the world!!</p>' +
                     '<p style="color: black; font-weight: bold;">I love you more than words can express! 💖</p>' +
                     '<div style="margin-top: 15px;">' +
                     '<span class="emoji">🎂</span>' +
@@ -533,7 +532,7 @@
             gameInvitation.className = 'game-invitation';
             gameInvitation.innerHTML = `
                 <div style="text-align: center; margin-top: 30px; padding: 25px; background: rgba(255, 255, 255, 0.1); border-radius: 20px; border: 2px solid rgba(255, 182, 193, 0.5);">
-                    <h3 style="color: black; font-weight: bold;">🎮 Mini game có thưởng cho bạn chúi Sminky nè! 🎮</h3>
+                    <h3 style="color: black; font-weight: bold;">🎮 Mini game có thưởng cho bạn chúi Sminky nè 🎮</h3>
                     <p style="color: black; font-weight: bold; margin-bottom: 25px;">Sẵn sàng chơi một minigame cuối để lấy trái tim chưa? 💖</p>
                     <div id="runawayButtons" style="display: flex; gap: 20px; justify-content: center;">
                         <button id="sleepyBtn" class="runaway-btn" onmouseover="runAway(this)" onclick="catchButton(this, 'sleepy')" style="color: black; font-weight: bold;">
@@ -608,7 +607,7 @@
                 button.style.background = 'linear-gradient(45deg, #4ecdc4, #44a08d)';
                 button.style.color = 'black';
                 button.style.fontWeight = 'bold';
-                document.getElementById('gameHint').textContent = '🎉 Tuyệt! Bạn có thể chơi game cúi để lấy trái tim cuối! 💖';
+                document.getElementById('gameHint').textContent = '🎉 Tuyệt! Giờ bạn đã có thể chơi game để lấy trái tim cuối! 💖';
                 
                 setTimeout(function() {
                     // Only start game if not already created
@@ -722,8 +721,8 @@
                     font-size: 24px;
                     color: #feca57;
                 ">
-                    <h3 style="color: #ff6b6b; margin-bottom: 15px;">🎯 Nhiệm vụ của mini game</h3>
-                    <p style="margin-bottom: 20px;">Sẵn sàng chơi game cuối chưa bà =)))</p>
+                    <h3 style="color: #ff6b6b; margin-bottom: 15px;">🎯 Nhiệm vụ của game cuối:</h3>
+                    <p style="margin-bottom: 20px;">Sẵn sàng chơi game chưa bà =)))</p>
                     <div id="countdown" style="
                         font-size: 48px;
                         font-weight: bold;
@@ -750,7 +749,7 @@
                     border-radius: 20px; 
                     cursor: pointer;
                 " id="restartBtn">
-                    🔄 Chơi lại
+                    🔄 Restart Game
                 </button>
             `;
             
@@ -817,31 +816,72 @@
             // Start game loop
             gameRunning = true;
             
+            // Remove any existing event listeners to prevent duplicates
+            canvas.removeEventListener('mousemove', handleMouseMove);
+            canvas.removeEventListener('click', handleClick);
+            canvas.removeEventListener('touchmove', handleTouchMove);
+            canvas.removeEventListener('touchstart', handleTouchStart);
+            
             // Mouse control
-            canvas.addEventListener('mousemove', function(e) {
-                var rect = canvas.getBoundingClientRect();
-                paddle.x = e.clientX - rect.left - paddle.width / 2;
-                
-                // Keep paddle in bounds
-                if (paddle.x < 0) paddle.x = 0;
-                if (paddle.x > canvas.width - paddle.width) paddle.x = canvas.width - paddle.width;
-                
-                // If ball is attached to paddle (game start), move ball with paddle
-                if (ball.y >= paddle.y - ball.radius - 5) {
-                    ball.x = paddle.x + paddle.width / 2;
-                }
-            });
+            canvas.addEventListener('mousemove', handleMouseMove);
+            
+            // Touch control for mobile
+            canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
             
             // Click to launch ball
-            canvas.addEventListener('click', function() {
-                if (ball.y >= paddle.y - ball.radius - 5) {
-                    // Launch ball upward with slight random angle
-                    ball.dy = -1.7; // Updated to match new slower speed
-                    ball.dx = (Math.random() - 0.5) * 2; // Reduced horizontal speed too
-                }
-            });
+            canvas.addEventListener('click', handleClick);
+            
+            // Touch to launch ball
+            canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
             
             gameLoop();
+        }
+        
+        function handleMouseMove(e) {
+            var rect = canvas.getBoundingClientRect();
+            paddle.x = e.clientX - rect.left - paddle.width / 2;
+            
+            // Keep paddle in bounds
+            if (paddle.x < 0) paddle.x = 0;
+            if (paddle.x > canvas.width - paddle.width) paddle.x = canvas.width - paddle.width;
+            
+            // If ball is attached to paddle (game start), move ball with paddle
+            if (ball.y >= paddle.y - ball.radius - 5) {
+                ball.x = paddle.x + paddle.width / 2;
+            }
+        }
+        
+        function handleTouchMove(e) {
+            e.preventDefault(); // Prevent scrolling
+            var rect = canvas.getBoundingClientRect();
+            var touch = e.touches[0];
+            paddle.x = touch.clientX - rect.left - paddle.width / 2;
+            
+            // Keep paddle in bounds
+            if (paddle.x < 0) paddle.x = 0;
+            if (paddle.x > canvas.width - paddle.width) paddle.x = canvas.width - paddle.width;
+            
+            // If ball is attached to paddle (game start), move ball with paddle
+            if (ball.y >= paddle.y - ball.radius - 5) {
+                ball.x = paddle.x + paddle.width / 2;
+            }
+        }
+        
+        function handleClick() {
+            if (ball.y >= paddle.y - ball.radius - 5) {
+                // Launch ball upward with slight random angle
+                ball.dy = -1.7;
+                ball.dx = (Math.random() - 0.5) * 2;
+            }
+        }
+        
+        function handleTouchStart(e) {
+            e.preventDefault(); // Prevent default touch behavior
+            if (ball.y >= paddle.y - ball.radius - 5) {
+                // Launch ball upward with slight random angle
+                ball.dy = -1.7;
+                ball.dx = (Math.random() - 0.5) * 2;
+            }
         }
 
         function createBricks() {
@@ -965,7 +1005,7 @@
                 ctx.font = '16px "Times New Roman"';
                 ctx.fillStyle = '#feca57';
                 ctx.textAlign = 'center';
-                ctx.fillText('Click to launch! 🚀', canvas.width / 2, canvas.height - 30);
+                ctx.fillText('Click/Touch để bắn bóng! 🚀', canvas.width / 2, canvas.height - 30);
             }
             
             requestAnimationFrame(gameLoop);
@@ -1056,7 +1096,7 @@
             // Show instruction to click
             setTimeout(function() {
                 if (ball.dy === 0) { // Ball still attached
-                    showTemporaryMessage('Click to launch ball! 🚀');
+                    showTemporaryMessage('Click/Touch để bắn bóng! 🚀');
                 }
             }, 1000);
         }
@@ -1090,8 +1130,8 @@
         }
 
         function updateUI() {
-            document.getElementById('gameScore').textContent = 'Score: ' + score;
-            document.getElementById('gameHearts').textContent = 'Hearts: ' + '❤️'.repeat(hearts);
+            document.getElementById('gameScore').textContent = 'Điểm: ' + score;
+            document.getElementById('gameHearts').textContent = 'Mạng: ' + '❤️'.repeat(hearts);
         }
 
         function gameWin() {
@@ -1107,7 +1147,7 @@
             ctx.font = '24px "Times New Roman"';
             ctx.fillStyle = 'white';
             ctx.fillText('Chúi đã dành được cỏa tim cuối cùng! 💖', canvas.width / 2, canvas.height / 2);
-            ctx.fillText('Adudu thật may mắn có người yêu tuyệt vời như bạn! 💕', canvas.width / 2, canvas.height / 2 + 40);
+            ctx.fillText('Adudu thật may mắn có 1 cô người yêu tuyệt vời như bạn! 💕', canvas.width / 2, canvas.height / 2 + 40);
             
             setTimeout(function() {
                 showFinalGameMessage();
@@ -1139,9 +1179,6 @@
             // Remove any temporary messages
             var tempMsg = document.getElementById('tempMessage');
             if (tempMsg) tempMsg.remove();
-            
-            // Reset game container flag to allow recreation if needed
-            gameContainerCreated = false;
             
             gameRunning = true;
             gameLoop();
@@ -1230,7 +1267,7 @@
                 } else {
                     // Fallback: copy URL to clipboard
                     navigator.clipboard.writeText(window.location.href).then(function() {
-                        alert('🔗 Link copied! Share this moment! 💕');
+                        alert('🔗 Link copied! Share this special moment! 💕');
                     });
                 }
             };
